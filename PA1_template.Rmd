@@ -8,17 +8,75 @@ output:
 
 ## Loading and preprocessing the data
 
+Firstly, the data set from the personal activty monitoring device (activity.zip) was uncompressed and the data read into a data frame. Dates were then transformed into date format.
+
+```{r} 
+unzip("activity.zip")
+activity <- read.csv("activity.csv")
+activity <- transform(activity, date = as.Date(date, format = "%Y-%m-%d"))
+```
 
 
 ## What is mean total number of steps taken per day?
 
+The total number of steps taken within each day was calculated by grouping the data set by date (using the group_by function of the dplyr package), then aggregated using the summarise function to perform the sum function on the grouped data. Na.rm was set to TRUE within the sum function in order to exclude missing values.
+
+```{r message = FALSE}
+  library(dplyr)
+  activity1 <- summarise(group_by(activity, date), total.steps = sum(steps, na.rm = TRUE))
+```
+
+A histogram of the total number of steps taken each day was plotted using ggplot2. Binwidth was optimised to 3100, which covered the range of the data and gave an appropriate level of granularity.   
+
+```{r fig.width = 8}
+library(ggplot2)
+m <- ggplot(activity1, aes(x = total.steps))+ geom_histogram(binwidth = 3100)
+m <- m + scale_x_continuous(limits = c(0, 25000)) + scale_y_continuous(limits = c(0, 20))
+m <- m + theme(plot.title = element_text(size = rel(2)))
+m <- m + ggtitle("Histogram of total number of steps taken per day") 
+m <- m + xlab("Total Steps per Day") + ylab("Count")
+m
+```
+
+The mean and median total number of steps taken per day were found with the appropriate functions. 
+
+```{r}
+mean(activity1$total.steps)
+median(activity1$total.steps)
+```
 
 
 ## What is the average daily activity pattern?
 
+The number of steps taken within each interval of the day, averaged across the period of observation, was calculated by grouping the data set by interval, then aggregating using the summarise function to call the mean function on the grouped data. Na.rm was set to TRUE within the mean function in order to exclude missing values.
 
+This was then plotted as a line graph using ggplot2.
+
+```{r fig.width = 8}
+activity2 <- summarise(group_by(activity, interval), avg.steps = mean(steps, na.rm = TRUE))
+n <- ggplot(activity2, aes(x = interval, y = avg.steps)) + geom_line()
+n <- n + scale_x_continuous(limits = c(0, 2400), breaks = seq(0, 2400, 600), expand = c(0,0))  
+n <- n + scale_y_continuous(limits = c(0, 250), expand = c(0,0)) 
+n <- n + theme(plot.title = element_text(size = rel(2)))
+n <- n + ggtitle("Average daily activity pattern: \n Average number of steps taken  per 5 min interval")
+n <- n + xlab("Interval / min") + ylab("Average Steps per 5 minute Interval")
+n
+```
+
+The 5-minute interval, which on average across all the days in the dataset, contained the maximum number of steps was returned by finding the maximum value of average steps in the data frame.
+
+```{r}
+maxinterval <- activity2[activity2$avg.steps == max(activity2$avg.steps), 1]
+maxinterval
+```
 
 ## Imputing missing values
+
+The numer of rows in the dataset containing NAs is found by:
+
+```{r}
+sum(is.na(activity$steps))
+```
 
 
 
