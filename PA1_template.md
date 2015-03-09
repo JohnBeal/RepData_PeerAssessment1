@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
@@ -34,14 +29,17 @@ A histogram of the total number of steps taken each day was plotted using ggplot
 ```r
 library(ggplot2)
 m <- ggplot(activity1, aes(x = total.steps))+ geom_histogram(binwidth = 3100)
-m <- m + scale_x_continuous(limits = c(0, 25000)) + scale_y_continuous(limits = c(0, 20))
-m <- m + theme(plot.title = element_text(size = rel(2)))
+m <- m + scale_x_continuous(limits = c(0, 25000), expand = c(0, 0)) 
+m <- m + scale_y_continuous(limits = c(0, 20), expand = c(0, 0))
+m <- m +theme_bw()
+m <- m + theme(plot.title = element_text(size = rel(2), vjust = 1), axis.title = element_text(size = 20), 
+               axis.text = element_text(size = 15))
 m <- m + ggtitle("Histogram of total number of steps taken per day") 
 m <- m + xlab("Total Steps per Day") + ylab("Count")
 m
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
 The mean and median total number of steps taken per day were found with the appropriate functions. 
 
@@ -82,7 +80,7 @@ n <- n + xlab("Interval / min") + ylab("Average Steps per 5 minute Interval")
 n
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 The 5-minute interval, which on average across all the days in the dataset, contained the maximum number of steps was returned by finding the maximum value of average steps in the data frame.
 
@@ -123,6 +121,7 @@ for(i in 1:length(activity3[,1])){
   }
 }
 ```
+
 For the new data set, the total number of steps taken within each day was calculated in the same way as previously, and a histogram was plotted.
 
 
@@ -130,14 +129,17 @@ For the new data set, the total number of steps taken within each day was calcul
 library (dplyr); library(ggplot2)
 activity4 <- summarise(group_by(activity3, date), total.steps = sum(steps, na.rm = TRUE))
 p <- ggplot(activity4, aes(x = total.steps))+ geom_histogram(binwidth = 3100)
-p <- p + scale_x_continuous(limits = c(0, 25000)) + scale_y_continuous(limits = c(0, 20))
-p <- p + theme(plot.title = element_text(size = rel(2)))
+p <- p + scale_x_continuous(limits = c(0, 25000), expand = c(0, 0)) 
+p <- p + scale_y_continuous(limits = c(0, 30), expand = c(0, 0))
+p <- p +theme_bw()
+p <- p + theme(plot.title = element_text(size = rel(2), vjust = 1), axis.title = element_text(size = 20), 
+               axis.text = element_text(size = 15))
 p <- p + ggtitle("Histogram of total number of steps taken per day") 
 p <- p + xlab("Total Steps per Day") + ylab("Count")
 p
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
 
 The mean and median number of steps taken within a day both increase in the data set with imputed NA values. The most significant effect of imputting values for NAs has been decreasing the number of days with a total of zero steps recorded, from 8 to 0.  These 8 days with zero total steps recorded had NA values recorded for all time intervals. In essence, these "missing" days have been replaced by the "average" day computed from the remaining data.    
 
@@ -192,5 +194,5 @@ q <- q + scale_y_continuous(limits = c(0, 250))
 q
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
 
